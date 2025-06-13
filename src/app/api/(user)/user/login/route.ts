@@ -1,9 +1,19 @@
 import connectDb from "@/utils/connectDb"
 import { NextResponse } from "next/server"
 import bcrypt from 'bcrypt'
+import jwt from 'jsonwebtoken'
 
 import User from "@/utils/model/User.model"
 
+const generateToken = ({ id }: { id: string }) => {
+    const token = jwt.sign(
+        { id: id },
+        process.env.NEXT_JWT_SECRET!,
+        { expiresIn: '7d' }
+    )
+
+    return token
+}
 
 export const POST = async (req: Request) => {
 
@@ -20,7 +30,18 @@ export const POST = async (req: Request) => {
 
         if (!samePassword) return NextResponse.json("password does not matched.", { status: 400 })
 
-        return NextResponse.json(ifExist, { status: 200 })
+        const token = generateToken({ id: ifExist._id })
+
+        const response = NextResponse.json(ifExist)
+
+        response.cookies.set('jwt', token, {
+            httpOnly: true,
+            secure: true,
+            path: '/',
+            maxAge: 60 * 60 * 24 * 14
+        })
+
+        return response
 
     } catch (error) {
         console.log(error)

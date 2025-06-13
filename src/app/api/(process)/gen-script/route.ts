@@ -1,7 +1,12 @@
 import { GoogleGenAI } from "@google/genai";
 import { NextResponse } from "next/server";
+import Users from "@/utils/model/User.model";
+import { getAuthenticatedUser } from "@/app/utils/getAuthenticatedUser";
+
 
 export const POST = async (req: Request) => {
+
+    const authUser = await getAuthenticatedUser()
 
     const body = await req.json()
 
@@ -88,7 +93,9 @@ Strict instructions:
         await Promise.all(imageFetchPromises);
 
 
+        console.log(storyData)
         return NextResponse.json(storyData);
+
     } catch (error) {
         console.error("Error generating story:", error);
         return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });

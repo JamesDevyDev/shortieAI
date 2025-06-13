@@ -27,8 +27,8 @@ const Header = () => {
                     </div>
 
                     <div className='h-full flex items-center justify-center  gap-[15px]'>
-                        <div className='px-[15px] py-[10px] rounded-full text-[rgb(50,50,50)] bg-white cursor-pointer'>Login</div>
-                        <div className='px-[15px] py-[10px] rounded-full bg-[rgb(50,50,50)] text-white cursor-pointer'>Register</div>
+                        <Link href='/auth/login' className='px-[15px] py-[10px] rounded-full text-[rgb(50,50,50)] bg-white cursor-pointer'>Login</Link>
+                        <Link href='/auth/register' className='px-[15px] py-[10px] rounded-full bg-[rgb(50,50,50)] text-white cursor-pointer'>Register</Link>
                     </div>
 
                 </div>
@@ -41,13 +41,13 @@ const Header = () => {
 
                     <div className='h-full flex items-center justify-around  gap-4'>
                         <div className='h-full flex items-center justify-center  gap-[15px]'>
-                            <div className='px-[15px] py-[10px] rounded-full text-[rgb(50,50,50)] bg-white cursor-pointer'>Login</div>
-                            <div className='px-[15px] py-[10px] rounded-full bg-[rgb(50,50,50)] text-white cursor-pointer'>Register</div>
+                            <Link href='/auth/login' className='px-[15px] py-[10px] rounded-full text-[rgb(50,50,50)] bg-white cursor-pointer'>Login</Link>
+                            <Link href='/auth/register' className='px-[15px] py-[10px] rounded-full bg-[rgb(50,50,50)] text-white cursor-pointer'>Register</Link>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </div >
     )
 }
 
