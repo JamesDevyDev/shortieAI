@@ -1,8 +1,39 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
+import useAuthStore from "@/zustand/useAuthStore";
+import { useRouter } from 'next/navigation'
 
 const LoginPage = () => {
+
+  const router = useRouter()
+
+  const { loginFunction, authUser, getLoggedInUser } = useAuthStore()
+
+  useEffect(() => {
+    getLoggedInUser()
+    if (authUser) {
+      router.push('/')
+    }
+  }, [authUser])
+
+  const [username, setUsername] = useState<string>('')
+  const [password, setPassword] = useState<string>('')
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const data = await loginFunction(username, password);
+    
+    if (data?.error) {
+      console.log(data?.error)
+      return
+    }
+
+    setUsername('');
+    setPassword('');
+    router.push('/')
+  };
+
   return (
     <div
       className="min-h-screen flex items-center justify-center bg-base-200"
@@ -12,7 +43,7 @@ const LoginPage = () => {
         <h2 className="text-2xl font-bold mb-6 text-center ">
           Login
         </h2>
-        <form className="flex flex-col gap-4">
+        <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
           <label className="form-control w-full">
             <div className="label">
               <span className="label-text ">username</span>
@@ -21,6 +52,8 @@ const LoginPage = () => {
               type="username"
               placeholder="Enter your username"
               className="input input-bordered w-full"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
             />
           </label>
 
@@ -32,10 +65,12 @@ const LoginPage = () => {
               type="password"
               placeholder="Enter your password"
               className="input input-bordered w-full"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
             />
           </label>
 
-          <button className="btn bg-[#7F81FF] w-full mt-4 text-white">Login</button>
+          <button className="btn bg-[#7F81FF] w-full mt-4 text-white" type="submit">Login</button>
         </form>
 
         <div className="text-center mt-4">

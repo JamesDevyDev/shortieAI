@@ -24,11 +24,11 @@ export const POST = async (req: Request) => {
         await connectDb()
 
         const ifExist = await User.findOne({ username: username })
-        if (!ifExist) return NextResponse.json("user doesnt exist.", { status: 400 })
+        if (!ifExist) return NextResponse.json({ error: "user doesnt exist." }, { status: 400 })
 
         const samePassword = await bcrypt.compare(password, ifExist.password)
 
-        if (!samePassword) return NextResponse.json("password does not matched.", { status: 400 })
+        if (!samePassword) return NextResponse.json({ error: "password does not matched." }, { status: 400 })
 
         const token = generateToken({ id: ifExist._id })
 
@@ -45,6 +45,6 @@ export const POST = async (req: Request) => {
 
     } catch (error) {
         console.log(error)
-        return NextResponse.json('Interanl Server Error.', { status: 500 })
+        return NextResponse.json({ error: 'Interanl Server Error.' }, { status: 500 })
     }
 }

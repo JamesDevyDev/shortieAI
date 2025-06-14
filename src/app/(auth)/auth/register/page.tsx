@@ -1,8 +1,41 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
+import useAuthStore from "@/zustand/useAuthStore";
+import { useRouter } from "next/navigation";
 
 const registerPage = () => {
+
+  const router = useRouter()
+
+  const { registerFunction, authUser, getLoggedInUser } = useAuthStore()
+
+  useEffect(() => {
+    getLoggedInUser()
+    if (authUser) {
+      router.push('/')
+    }
+  }, [authUser])
+
+  const [username, setUsername] = useState<string>('')
+  const [password, setPassword] = useState<string>('')
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const data = await registerFunction(username, password);
+
+
+
+    if (data?.error) {
+      console.log(data?.error)
+      return
+    }
+
+    setUsername('');
+    setPassword('');
+    router.push('/auth/login')
+  };
+
   return (
     <div
       className="min-h-screen flex items-center justify-center bg-base-200"
@@ -12,7 +45,7 @@ const registerPage = () => {
         <h2 className="text-2xl font-bold mb-6 text-center">
           Register
         </h2>
-        <form className="flex flex-col gap-4">
+        <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
           <label className="form-control w-full">
             <div className="label">
               <span className="label-text">username</span>
@@ -21,6 +54,8 @@ const registerPage = () => {
               type="username"
               placeholder="Enter your username"
               className="input input-bordered w-full"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
             />
           </label>
 
@@ -32,6 +67,8 @@ const registerPage = () => {
               type="password"
               placeholder="Enter your password"
               className="input input-bordered w-full"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
             />
           </label>
 

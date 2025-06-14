@@ -1,9 +1,17 @@
 'use client'
 
-import React from 'react'
+import React, { useEffect } from 'react'
 import Link from 'next/link'
+import useAuthStore from '@/zustand/useAuthStore'
 
 const Header = () => {
+
+    const { getLoggedInUser, authUser } = useAuthStore()
+
+    useEffect(() => {
+        getLoggedInUser()
+    }, [])
+
     return (
         <div className='text-[rgb(50,50,50)]'>
 
@@ -26,10 +34,13 @@ const Header = () => {
                         </div>
                     </div>
 
-                    <div className='h-full flex items-center justify-center  gap-[15px]'>
+                    {!authUser && <div className='h-full flex items-center justify-center  gap-[15px]'>
                         <Link href='/auth/login' className='px-[15px] py-[10px] rounded-full text-[rgb(50,50,50)] bg-white cursor-pointer'>Login</Link>
                         <Link href='/auth/register' className='px-[15px] py-[10px] rounded-full bg-[rgb(50,50,50)] text-white cursor-pointer'>Register</Link>
-                    </div>
+                    </div>}
+
+                    {authUser && <div className='w-[100px] h-[100px] bg-red-500'>
+                    </div>}
 
                 </div>
             </div>
@@ -40,10 +51,13 @@ const Header = () => {
                     <Link href='/' className=' text-[30px]'>shortie</Link>
 
                     <div className='h-full flex items-center justify-around  gap-4'>
-                        <div className='h-full flex items-center justify-center  gap-[15px]'>
+                        {!authUser && <div className='h-full flex items-center justify-center  gap-[15px]'>
                             <Link href='/auth/login' className='px-[15px] py-[10px] rounded-full text-[rgb(50,50,50)] bg-white cursor-pointer'>Login</Link>
                             <Link href='/auth/register' className='px-[15px] py-[10px] rounded-full bg-[rgb(50,50,50)] text-white cursor-pointer'>Register</Link>
-                        </div>
+                        </div>}
+
+                        {authUser && <div className='w-[100px] h-[100px] bg-red-500'>
+                        </div>}
                     </div>
                 </div>
             </div>

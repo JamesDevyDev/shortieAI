@@ -14,8 +14,8 @@ export const POST = async (req: Request) => {
         await connectDb()
 
         const ifExist = await User.findOne({ username: username })
-        if (ifExist) return NextResponse.json("user already exist.", { status: 400 })
-        if (password < 6) return NextResponse.json("password must be 6 characters", { status: 400 })
+        if (ifExist) return NextResponse.json({ error: "user already exist." }, { status: 400 })
+        if (password.length < 6) return NextResponse.json({ error: "password must be 6 characters" }, { status: 400 })
 
         const salt = await bcrypt.genSalt(10)
         const hashPassword = await bcrypt.hash(password, salt)
@@ -27,6 +27,6 @@ export const POST = async (req: Request) => {
 
     } catch (error) {
         console.log(error)
-        return NextResponse.json('Interanl Server Error.', { status: 500 })
+        return NextResponse.json({ error: 'Interanl Server Error.' }, { status: 500 })
     }
 }
