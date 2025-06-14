@@ -4,36 +4,41 @@ import React, { useState, useEffect } from "react";
 import useAuthStore from "@/zustand/useAuthStore";
 import { useRouter } from "next/navigation";
 
-const registerPage = () => {
+const RegisterPage = () => {
+  const router = useRouter();
 
-  const router = useRouter()
+  const { registerFunction, authUser, getLoggedInUser } = useAuthStore();
 
-  const { registerFunction, authUser, getLoggedInUser } = useAuthStore()
+  const [username, setUsername] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
-    getLoggedInUser()
+    getLoggedInUser();
     if (authUser) {
-      router.push('/')
+      router.push("/");
     }
-  }, [authUser])
-
-  const [username, setUsername] = useState<string>('')
-  const [password, setPassword] = useState<string>('')
+  }, [authUser]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsLoading(true);
+    setError(null);
+
     const data = await registerFunction(username, password);
 
-
+    setIsLoading(false);
 
     if (data?.error) {
-      console.log(data?.error)
-      return
+      setError(data.error);
+      return;
     }
 
-    setUsername('');
-    setPassword('');
-    router.push('/auth/login')
+    setUsername("");
+    setPassword("");
+    router.push("/auth/login");
   };
 
   return (
@@ -42,20 +47,19 @@ const registerPage = () => {
       data-theme="light"
     >
       <div className="w-full max-w-sm p-8 shadow-xl bg-gray-200 rounded-box text-[#323232]">
-        <h2 className="text-2xl font-bold mb-6 text-center">
-          Register
-        </h2>
+        <h2 className="text-2xl font-bold mb-6 text-center">Register</h2>
         <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
           <label className="form-control w-full">
             <div className="label">
-              <span className="label-text">username</span>
+              <span className="label-text">Username</span>
             </div>
             <input
-              type="username"
+              type="text"
               placeholder="Enter your username"
               className="input input-bordered w-full"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
+              required
             />
           </label>
 
@@ -69,10 +73,26 @@ const registerPage = () => {
               className="input input-bordered w-full"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              required
             />
           </label>
 
-          <button className="btn bg-[#7F81FF] text-white w-full mt-4">Register</button>
+          <button
+            type="submit"
+            className="btn bg-[#7F81FF] text-white w-full mt-4 disabled:opacity-60"
+            disabled={isLoading}
+          >
+            {isLoading ? (
+              <span className="loading loading-spinner loading-sm"></span>
+            ) : (
+              "Register"
+            )}
+          </button>
+
+          {/* Error Message */}
+          {error && (
+            <p className="text-sm text-red-500 text-center mt-2">{error}</p>
+          )}
         </form>
 
         <div className="text-center mt-4">
@@ -85,4 +105,4 @@ const registerPage = () => {
   );
 };
 
-export default registerPage;
+export default RegisterPage;
